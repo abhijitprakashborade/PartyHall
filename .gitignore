@@ -1,0 +1,53 @@
+# ─── Python / Django ─────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.log
+*.pot
+db.sqlite3
+.env
+venv/
+backend/.env
+backend/venv/
+backend/staticfiles/
+backend/media/
+
+# ─── Node / Next.js ──────────────────────────────────────────
+node_modules/
+party-hall-saas/.next/
+party-hall-saas/out/
+party-hall-saas/.env.local
+party-hall-saas/.env*.local
+party-hall-saas/npm-debug.log*
+party-hall-saas/yarn-debug.log*
+
+# ─── Docker ──────────────────────────────────────────────────
+# Keep docker-compose.yml in repo but ignore local overrides
+docker-compose.override.yml
+
+# ─── IDEs / Editors ──────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ─── Testing / Coverage ──────────────────────────────────────
+.coverage
+htmlcov/
+.pytest_cache/
+coverage.xml
+
+# ─── Secrets & Certs ─────────────────────────────────────────
+*.pem
+*.key
+*.cert
+secrets/
