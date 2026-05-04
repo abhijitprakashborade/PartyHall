@@ -240,7 +240,7 @@ MIT — free to use, modify, and distribute.
 ## Screenshots
 
 **Landing Page**
-![Landing page](docs/screenshots/landing(1).png)
+![Landing page](docs/screenshots/landing.png)
 
 **Hall Listings**
 ![Hall listings](docs/screenshots/halls.png)
