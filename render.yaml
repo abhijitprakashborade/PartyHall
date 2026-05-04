@@ -1,0 +1,23 @@
+services:
+  # ── Django Backend ─────────────────────────────────────────────────────────
+  - type: web
+    name: partyhall-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true          # Render auto-generates a secure random key
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: "*"
+      - key: PAYMENT_GATEWAY
+        value: dummy
+      # Set these manually in Render dashboard after creating the service:
+      # DATABASE_URL  — from Supabase (postgresql://...)
+      # REDIS_URL     — from Upstash  (redis://...)
+      # CLOUDINARY_URL — from Cloudinary (cloudinary://...)
+      # FRONTEND_URL  — your Vercel URL  (https://your-app.vercel.app)
