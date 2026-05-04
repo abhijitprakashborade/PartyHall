@@ -1,68 +1,74 @@
 # PartyHub — Party Hall Booking Platform
 
-A full-stack SaaS app for discovering and booking party halls in India. Built with Next.js 16, Django 5.2, PostgreSQL, Redis, and Docker.
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
+![Django](https://img.shields.io/badge/Django-5.2-green?logo=django)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-blue?logo=postgresql)
+![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
-I built this to solve a real problem — booking party halls in India is still mostly done over WhatsApp and phone calls. PartyHub lets customers browse verified halls, pick a package, and confirm a booking in under 2 minutes, while giving venue owners a proper dashboard to manage everything.
+A full-stack SaaS platform for discovering and booking party halls in India. Customers can browse verified venues, pick a package, and confirm a booking in under 2 minutes. Venue owners get a proper dashboard to manage everything — slots, bookings, analytics, and walk-in customers.
+
+> **Why I built this:** Party hall booking in India is still mostly done over WhatsApp and phone calls. I wanted to fix that — one city at a time.
 
 ---
 
-## What's Inside
+## Features
 
 ### For Customers
 - Browse and filter halls by city, capacity, and price
-- Real-time slot availability (WebSocket-powered, 10-minute lock during checkout)
-- 6 curated packages from ₹1,000 to ₹3,000
-- Add-on services (photography, fog entry, cake, etc.)
-- Digital QR code ticket on booking confirmation
-- Leave reviews after completed bookings
+- Real-time slot availability — WebSocket-powered with a 10-minute lock during checkout
+- 6 curated packages from ₹1,000 to ₹3,000 per slot
+- Add-on services: photography, fog machine entry, cake, decorations, etc.
+- Digital QR code ticket sent on booking confirmation
+- Leave reviews after a completed booking
 
 ### For Venue Partners
-- Dashboard with revenue, occupancy, and booking analytics
-- Multi-step hall creation with image upload and amenities
-- Visual slot manager — add, block, or generate recurring slots
-- Walk-in booking tool for phone/cash customers
-- QR scanner for customer check-in
-- Subscription-gated access (trial → paid plans)
+- Dashboard showing revenue, occupancy rate, and booking trends
+- Multi-step hall creation with image upload and amenity selection
+- Visual slot manager — add individual slots, bulk-generate recurring ones, or block dates
+- Walk-in booking tool for cash/phone customers
+- QR scanner for customer check-in at the venue
+- Subscription-gated access (free trial → paid plans)
 
 ### For Admins
-- Platform-wide overview: bookings, revenue, new signups
-- Approve or reject hall submissions
+- Platform-wide stats: total bookings, revenue, new signups
+- Approve or reject hall submissions before they go live
 - Moderate customer reviews
-- Manage subscription plans and partner limits
+- Manage subscription plans and per-partner limits
 
 ---
 
 ## Tech Stack
 
-| | |
+| Layer | Technology |
 |---|---|
 | **Frontend** | Next.js 16 (App Router), React 19, TypeScript |
 | **Styling** | Tailwind CSS 4, Framer Motion, MUI v7 |
 | **Backend** | Django 5.2, Django REST Framework |
 | **Real-time** | Django Channels 4 + Daphne (WebSocket) |
 | **Database** | PostgreSQL 16 |
-| **Cache** | Redis 7 |
-| **Auth** | JWT (access + refresh token rotation) |
-| **Payments** | Razorpay, Cashfree, or Dummy (dev) |
-| **Maps** | MapLibre GL + OpenFreeMap — free, no API key |
+| **Cache / Queue** | Redis 7 |
+| **Auth** | JWT — access + refresh token rotation |
+| **Payments** | Razorpay, Cashfree, or Dummy (dev mode) |
+| **Maps** | MapLibre GL + OpenFreeMap — no API key needed |
 | **Infra** | Docker Compose (local), Vercel (frontend), VPS (backend) |
 
 ---
 
-## Running Locally
+## Getting Started
 
-### What you need
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — for the backend stack
-- [Node.js 20+](https://nodejs.org/) — for the frontend
+### Prerequisites
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) — runs the backend stack
+- [Node.js 20+](https://nodejs.org/)
 - Git
 
-### 1. Clone and set up
+### 1. Clone and configure
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/partyhub.git
-cd partyhub
+git clone https://github.com/YOUR_USERNAME/Party-Hall-SaaS-Model.git
+cd Party-Hall-SaaS-Model
 
-# Copy the env file — the defaults work out of the box for local dev
+# Copy env files — defaults work out of the box for local dev
 cp backend/.env.example backend/.env
 cp party-hall-saas/.env.example party-hall-saas/.env.local
 ```
@@ -70,17 +76,14 @@ cp party-hall-saas/.env.example party-hall-saas/.env.local
 ### 2. Start the backend
 
 ```bat
-# Windows — PowerShell
+# Windows (PowerShell or CMD)
 .\dev.bat
-
-# Windows — Command Prompt (CMD)
-dev.bat
 
 # Mac / Linux
 sh dev.sh
 ```
 
-This starts PostgreSQL, Redis, and Django (with migrations) via Docker. Takes about 30 seconds on first run.
+This spins up PostgreSQL, Redis, and Django (with migrations applied) via Docker. First run takes about 30–60 seconds.
 
 ### 3. Start the frontend
 
@@ -92,30 +95,30 @@ npm run dev
 
 Open **http://localhost:3000** in your browser.
 
-### 4. Log in
+### 4. Demo accounts
 
 | Role | Email | Password |
 |---|---|---|
 | Admin | `admin@partyhub.in` | `Admin@123!` |
 | Partner | `john@example.com` | `Partner@123!` |
 
-> The payment gateway defaults to `dummy` mode — bookings complete instantly with a single click, no real money involved.
+> Payment gateway defaults to `dummy` mode — bookings complete instantly with no real money involved.
 
 ---
 
 ## Project Structure
 
 ```
-partyhub/
+Party-Hall-SaaS-Model/
 ├── backend/                  # Django backend
 │   ├── accounts/             # Custom user model, JWT auth
 │   ├── bookings/             # Slot locking, booking flow, QR check-in
-│   ├── halls/                # Hall, Package, AddonService, HallImage
+│   ├── halls/                # Hall, Package, AddonService, HallImage models
 │   ├── reviews/              # Reviews + admin moderation
 │   ├── subscriptions/        # Partner subscription plans
 │   ├── payments/             # Razorpay / Cashfree integration
 │   ├── services/             # Shared utilities, price calculator
-│   ├── config/               # Settings, URLs, ASGI
+│   ├── config/               # Django settings, URL routing, ASGI config
 │   ├── Dockerfile
 │   └── requirements.txt
 │
@@ -123,29 +126,31 @@ partyhub/
 │   └── src/
 │       ├── app/
 │       │   ├── page.tsx      # Landing page
-│       │   ├── halls/        # Browse, detail, compare, map
+│       │   ├── halls/        # Browse halls, detail view, compare, map
 │       │   ├── booking/      # Checkout wizard
 │       │   ├── partner/      # Partner dashboard
 │       │   ├── admin/        # Admin panel
-│       │   └── user/         # Customer bookings, profile
+│       │   └── account/      # Customer bookings and profile
 │       ├── components/
 │       │   ├── shared/       # Navbar, Footer, MapView
-│       │   └── ui/           # Design system components
-│       ├── context/          # Auth, Compare contexts
+│       │   └── ui/           # Reusable design system components
+│       ├── context/          # Auth context, Compare context
 │       ├── hooks/            # useAuth, useWebSocket
-│       └── lib/              # Axios client, utilities
+│       └── lib/              # Axios client, helpers
 │
-├── docker-compose.yml
-├── docker-compose.prod.yml
-├── nginx/                    # Nginx config for production
+├── docker-compose.yml        # Local dev stack
+├── docker-compose.prod.yml   # Production stack
+├── nginx/                    # Nginx reverse proxy config
+├── dev.bat                   # Windows one-command dev startup
+├── dev.sh                    # Mac/Linux one-command dev startup
 └── README.md
 ```
 
 ---
 
-## API
+## API Reference
 
-Interactive Swagger docs at **http://localhost:8000/api/docs/** when running locally.
+Interactive Swagger docs available at **http://localhost:8000/api/docs/** when running locally.
 
 | Group | Base Path |
 |---|---|
@@ -157,7 +162,7 @@ Interactive Swagger docs at **http://localhost:8000/api/docs/** when running loc
 | Reviews | `/api/reviews/` |
 | Subscriptions | `/api/subscriptions/` |
 
-WebSocket for real-time slot status:
+**WebSocket** — real-time slot availability:
 ```
 ws://localhost:8000/ws/slots/<hall_id>/
 ```
@@ -166,7 +171,7 @@ ws://localhost:8000/ws/slots/<hall_id>/
 
 ## Environment Variables
 
-### Backend (`backend/.env`)
+### Backend — `backend/.env`
 
 ```env
 DEBUG=True
@@ -183,7 +188,7 @@ DB_PORT=5432
 # Redis
 REDIS_URL=redis://redis:6379/0
 
-# JWT
+# JWT token expiry (in minutes / days)
 JWT_ACCESS_EXPIRY=60
 JWT_REFRESH_EXPIRY=7
 
@@ -194,7 +199,7 @@ PAYMENT_GATEWAY=dummy
 CORS_ALLOWED_ORIGINS=http://localhost:3000
 ```
 
-### Frontend (`party-hall-saas/.env.local`)
+### Frontend — `party-hall-saas/.env.local`
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
@@ -204,36 +209,32 @@ NEXT_PUBLIC_PAYMENT_GATEWAY=dummy
 
 ---
 
-## Deploying to Vercel (Frontend)
+## Deployment
 
-The frontend deploys to Vercel out of the box:
+### Frontend (Vercel)
 
 1. Push to GitHub
-2. Import the repo in [Vercel](https://vercel.com) — set root directory to `party-hall-saas`
-3. Add environment variables in the Vercel dashboard:
-   - `NEXT_PUBLIC_API_URL` → your backend URL (e.g. `https://api.yourdomain.com/api`)
+2. Import the repo in [Vercel](https://vercel.com) — set the root directory to `party-hall-saas`
+3. Add these environment variables in the Vercel dashboard:
+   - `NEXT_PUBLIC_API_URL` → `https://api.yourdomain.com/api`
    - `NEXT_PUBLIC_WS_URL` → `wss://api.yourdomain.com`
    - `NEXT_PUBLIC_PAYMENT_GATEWAY` → `razorpay`
 
-For the backend, deploy Django + PostgreSQL + Redis to any VPS (DigitalOcean, Railway, Render, AWS EC2).
+### Backend
+
+Deploy Django + PostgreSQL + Redis to any VPS — DigitalOcean, Railway, Render, or AWS EC2 all work fine. Use `docker-compose.prod.yml` with the Nginx config included.
 
 ---
 
 ## User Roles
 
-| Role | What they can do |
+| Role | Access |
 |---|---|
-| **Customer** | Browse halls, book slots, view/cancel bookings, submit reviews |
-| **Partner** | Everything above + manage halls, slots, packages, view analytics |
+| **Customer** | Browse halls, book slots, manage bookings, write reviews |
+| **Partner** | Everything above + manage own halls, slots, packages, and analytics |
 | **Admin** | Full platform access — approve halls, manage users, moderate reviews |
 
-Partners can only access their own data — enforced at the database query level, not just the UI.
-
----
-
-## License
-
-MIT — free to use, modify, and distribute.
+Partners can only see and modify their own data — enforced at the database query level, not just the UI.
 
 ---
 
@@ -250,3 +251,9 @@ MIT — free to use, modify, and distribute.
 
 **Admin Dashboard**
 ![Admin Dashboard](docs/screenshots/Admin%20Dashboard.png)
+
+---
+
+## License
+
+MIT — free to use, modify, and distribute.
