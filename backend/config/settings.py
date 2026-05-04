@@ -1,8 +1,10 @@
 """
 Django settings for Party Hall SaaS Platform
 Backend: Django 5.2 + PostgreSQL 16 + PostGIS + DRF + JWT + Channels
+Supports: Local Docker | Railway (cloud) | Vercel frontend + Cloudinary media
 """
 import environ
+import dj_database_url
 from pathlib import Path
 from datetime import timedelta
 
@@ -34,6 +36,9 @@ INSTALLED_APPS = [
     'django_filters',
     'drf_spectacular',
     'channels',  # Django Channels for real-time WebSocket
+    # Cloud storage (only activated when CLOUDINARY_URL env var is set)
+    'cloudinary_storage',
+    'cloudinary',
     # Our apps
     'accounts',
     'halls',
@@ -45,6 +50,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Serve static files without a separate CDN
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -79,18 +85,23 @@ TEMPLATES = [
 WSGI_APPLICATION = 'config.wsgi.application'
 
 # ============================================================
-# DATABASE — PostgreSQL 16 + PostGIS (self-hosted / Docker)
+# DATABASE — PostgreSQL (Docker locally, Railway in production)
+# Railway auto-injects DATABASE_URL; local Docker uses individual vars.
 # ============================================================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',  # Standard PostgreSQL engine
-        'NAME': env('DB_NAME', default='partyhub_db'),
-        'USER': env('DB_USER', default='partyhub'),
-        'PASSWORD': env('DB_PASSWORD', default='partyhub_pass'),
-        'HOST': env('DB_HOST', default='localhost'),
-        'PORT': env('DB_PORT', default='5432'),
+_database_url = env('DATABASE_URL', default=None)
+if _database_url:
+    DATABASES = {'default': dj_database_url.parse(_database_url, conn_max_age=600)}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': env('DB_NAME', default='partyhub_db'),
+            'USER': env('DB_USER', default='partyhub'),
+            'PASSWORD': env('DB_PASSWORD', default='partyhub_pass'),
+            'HOST': env('DB_HOST', default='localhost'),
+            'PORT': env('DB_PORT', default='5432'),
+        }
     }
-}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -137,18 +148,20 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    
+
     # Cookie settings
+    # In production (DEBUG=False): Secure=True + SameSite=None needed for
+    # cross-domain cookies (Vercel frontend → Railway backend)
     'AUTH_COOKIE': 'ph_access',
     'AUTH_COOKIE_REFRESH': 'ph_refresh',
     'AUTH_COOKIE_PATH': '/',
     'AUTH_COOKIE_HTTP_ONLY': True,
-    'AUTH_COOKIE_SECURE': False, # Set to True in production
-    'AUTH_COOKIE_SAMESITE': 'Lax',
+    'AUTH_COOKIE_SECURE': not DEBUG,
+    'AUTH_COOKIE_SAMESITE': 'None' if not DEBUG else 'Lax',
 }
 
 # ============================================================
-# CORS — Allow Next.js frontend
+# CORS — Allow Next.js frontend (local + Vercel production)
 # ============================================================
 CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://localhost:3000',
@@ -165,17 +178,17 @@ CORS_ALLOWED_ORIGINS = env.list('CORS_ALLOWED_ORIGINS', default=[
     'http://192.168.1.102:3001',
 ])
 
+# Allow any *.vercel.app and custom domain in production
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r'^https://.*\.vercel\.app$',
+    r'^https://partyhall.*$',
+]
+
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=[
     'http://localhost:3000',
     'http://localhost:3001',
-    'http://localhost:3002',
-    'http://localhost:3003',
     'http://127.0.0.1:3000',
-    'http://127.0.0.1:3001',
-    'http://127.0.0.1:3002',
-    'http://127.0.0.1:3003',
     'http://192.168.1.102:3000',
-    'http://192.168.1.102:3001',
 ])
 
 CORS_ALLOW_CREDENTIALS = True
@@ -208,7 +221,19 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+# WhiteNoise: compressed + cached static files for Railway/cloud hosting
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# ── Media / File Storage ──────────────────────────────────────────────────────
+# Local (Docker): files stored on disk at /media/
+# Production (Railway + Cloudinary): files uploaded to Cloudinary CDN
+_cloudinary_url = env('CLOUDINARY_URL', default=None)
+if _cloudinary_url:
+    DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
+    CLOUDINARY_STORAGE = {'CLOUDINARY_URL': _cloudinary_url}
+    MEDIA_URL = '/media/'   # kept for URL reversal; actual files are on Cloudinary CDN
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = BASE_DIR / 'media'
 
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:3000')

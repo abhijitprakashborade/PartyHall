@@ -22,3 +22,9 @@ cashfree-pg==4.*
 pgeocode==0.4.1
 # NOTE: GDAL + GEOS are installed via system packages in the Dockerfile
 # django.contrib.gis requires these system libs
+
+# ── Cloud / Production ────────────────────────────────────────────────────────
+cloudinary>=1.40.0                  # Cloudinary SDK
+django-cloudinary-storage>=0.3.0   # Django DEFAULT_FILE_STORAGE → Cloudinary
+whitenoise>=6.6.0                   # Serve static files on Railway (no separate CDN needed)
+dj-database-url>=2.1.0             # Parse DATABASE_URL injected by Railway/Heroku

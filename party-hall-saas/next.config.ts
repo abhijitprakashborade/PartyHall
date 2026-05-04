@@ -22,10 +22,12 @@ const nextConfig: NextConfig = {
   images: {
     formats: ['image/webp', 'image/avif'],
     remotePatterns: [
-      { protocol: 'http', hostname: 'localhost' },
-      { protocol: 'http', hostname: 'backend' },
-      { protocol: 'http', hostname: '10.2.0.2' },
-      { protocol: 'http', hostname: '192.168.1.102' },
+      { protocol: 'http',  hostname: 'localhost' },
+      { protocol: 'http',  hostname: 'backend' },
+      { protocol: 'http',  hostname: '10.2.0.2' },
+      { protocol: 'http',  hostname: '192.168.1.102' },
+      // Cloudinary CDN — used in production (Railway + Cloudinary)
+      { protocol: 'https', hostname: 'res.cloudinary.com' },
     ],
     minimumCacheTTL: 60,
   },
