@@ -70,8 +70,8 @@ cp party-hall-saas/.env.example party-hall-saas/.env.local
 ### 2. Start the backend
 
 ```bash
-# Windows
-dev.bat
+# Windows (PowerShell or CMD)
+.\dev.bat
 
 # Mac / Linux
 sh dev.sh
