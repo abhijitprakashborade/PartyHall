@@ -69,9 +69,12 @@ cp party-hall-saas/.env.example party-hall-saas/.env.local
 
 ### 2. Start the backend
 
-```bash
-# Windows (PowerShell or CMD)
+```bat
+# Windows — PowerShell
 .\dev.bat
+
+# Windows — Command Prompt (CMD)
+dev.bat
 
 # Mac / Linux
 sh dev.sh
@@ -231,3 +234,16 @@ Partners can only access their own data — enforced at the database query level
 ## License
 
 MIT — free to use, modify, and distribute.
+
+---
+
+## Screenshots
+
+**Landing Page**
+![Landing page](docs/screenshots/landing.png)
+
+**Hall Listings**
+![Hall listings](docs/screenshots/halls.png)
+
+**Login**
+![Login page](docs/screenshots/login.png)
