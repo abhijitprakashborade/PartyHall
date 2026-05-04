@@ -240,10 +240,13 @@ MIT — free to use, modify, and distribute.
 ## Screenshots
 
 **Landing Page**
-![Landing page](docs/screenshots/landing.png)
+![Landing page](docs/screenshots/landing(1).png)
 
 **Hall Listings**
 ![Hall listings](docs/screenshots/halls.png)
 
 **Login**
 ![Login page](docs/screenshots/login.png)
+
+**Admin Dashboard**
+![Admin Dashboard](docs/screenshots/Admin%20Dashboard.png)
