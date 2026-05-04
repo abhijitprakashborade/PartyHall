@@ -19,6 +19,9 @@ backend/venv/
 backend/staticfiles/
 backend/media/
 
+# ─── Dev / Debug Scripts (local only, not for repo) ──────────
+backend/scripts/
+
 # ─── Node / Next.js ──────────────────────────────────────────
 node_modules/
 party-hall-saas/.next/
@@ -27,9 +30,9 @@ party-hall-saas/.env.local
 party-hall-saas/.env*.local
 party-hall-saas/npm-debug.log*
 party-hall-saas/yarn-debug.log*
+party-hall-saas/tsconfig.tsbuildinfo
 
 # ─── Docker ──────────────────────────────────────────────────
-# Keep docker-compose.yml in repo but ignore local overrides
 docker-compose.override.yml
 
 # ─── IDEs / Editors ──────────────────────────────────────────

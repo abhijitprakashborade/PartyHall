@@ -5,8 +5,6 @@
 #   backend  → Django 5.2 + Daphne ASGI (HTTP + WebSocket)
 #   frontend → Next.js 16 dev server
 
-version: '3.9'
-
 services:
   # ──────────────────────────────────────────────────────────
   # 1. PostgreSQL 16 + PostGIS

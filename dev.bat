@@ -19,6 +19,6 @@ if not exist "party-hall-saas\.env.local" (
 
 :: 3. Start Docker Compose
 echo 🐳 Launching Docker containers...
-docker-compose up --build
+docker-compose up
 
 pause
