@@ -247,7 +247,7 @@ class SubscriptionView(APIView):
 
 
 class StartTrialView(APIView):
-    """Partner starts their one-time 1-hour free trial."""
+    """Partner starts their one-time 30-day free trial."""
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -268,7 +268,7 @@ class StartTrialView(APIView):
             pass
 
         now = timezone.now()
-        expires_at = now + timedelta(hours=1)
+        expires_at = now + timedelta(days=30)
 
         sub, _ = Subscription.objects.update_or_create(
             partner=request.user,
@@ -300,7 +300,7 @@ class StartTrialView(APIView):
         return Response({
             'success': True,
             'trial_expires_at': expires_at,
-            'message': 'Your 1-hour free trial has started! Your hall is now live.',
+            'message': 'Your 30-day free trial has started! Your hall is now live.',
         })
 
 

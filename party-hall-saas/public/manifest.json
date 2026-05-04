@@ -1,0 +1,62 @@
+{
+    "name": "PartyHub – Party Hall Booking",
+    "short_name": "PartyHub",
+    "description": "Book premium party halls online. Browse, compare, and book instantly.",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#0f0521",
+    "theme_color": "#7c3aed",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/icons/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/icons/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/home.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "label": "Homepage"
+        }
+    ],
+    "categories": [
+        "lifestyle",
+        "travel"
+    ],
+    "shortcuts": [
+        {
+            "name": "Browse Halls",
+            "short_name": "Halls",
+            "description": "Find party halls near you",
+            "url": "/halls",
+            "icons": [
+                {
+                    "src": "/icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "My Bookings",
+            "short_name": "Bookings",
+            "description": "View your booking history",
+            "url": "/account/bookings",
+            "icons": [
+                {
+                    "src": "/icons/icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

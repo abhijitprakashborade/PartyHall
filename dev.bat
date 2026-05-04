@@ -30,4 +30,10 @@ echo.
 echo  First run takes 30-60s to compile.  Press Ctrl+C to stop.
 echo.
 
-docker-compose up
+docker-compose up --detach
+
+echo.
+echo  All services running. Press Ctrl+C to stop.
+echo.
+
+docker-compose logs --follow

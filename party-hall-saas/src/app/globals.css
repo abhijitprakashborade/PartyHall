@@ -1,0 +1,301 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@import 'maplibre-gl/dist/maplibre-gl.css';
+@import "tailwindcss";
+@tailwind base;
+
+/* Tell Tailwind v4 WHERE to scan for utility class usage */
+@source "../../src/app/**/*.{ts,tsx}";
+@source "../../src/components/**/*.{ts,tsx}";
+@source "../../src/lib/**/*.{ts,tsx}";
+
+/* Tailwind v4 — enable class-based dark mode */
+@variant dark (&:is(.dark *));
+
+@theme {
+  --font-family-sans: 'Inter', system-ui, sans-serif;
+  --font-family-heading: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  --color-brand-purple: #8B5CF6;
+  --color-brand-pink: #EC4899;
+  --color-brand-gold: #F59E0B;
+  --color-brand-dark: #0F0A1E;
+  --radius: 0.75rem;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CSS VARIABLES — Light mode (default)
+══════════════════════════════════════════════════════════ */
+:root {
+  --background: #f8f7ff;
+  --foreground: #1e1b4b;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #ec4899;
+  --surface: #ffffff;
+  --surface-alt: #f1f0ff;
+  --border-color-default: #e2e8f0;
+  --text-muted: #6b7280;
+}
+
+/* ══════════════════════════════════════════════════════════
+   CSS VARIABLES — Dark mode
+   Activated when BerryThemeProvider sets:
+   document.documentElement.classList.add('dark')
+   document.documentElement.setAttribute('data-theme', 'dark')
+══════════════════════════════════════════════════════════ */
+.dark,
+[data-theme="dark"] {
+  --background: #0f0f1a;
+  --foreground: #f1f0ff;
+  --primary: #a78bfa;
+  --primary-foreground: #0f0f1a;
+  --secondary: #f9a8d4;
+  --surface: #1a1a2e;
+  --surface-alt: #16213e;
+  --border-color-default: #2d2b55;
+  --text-muted: #a78bfa;
+}
+
+/* ══════════════════════════════════════════════════════════
+   BASE STYLES
+══════════════════════════════════════════════════════════ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* ISSUE #2 fix: Prevent any overflowing child from causing horizontal scroll */
+  overflow-x: hidden;
+}
+
+/* ══════════════════════════════════════════════════════════
+   MOBILE: Prevent iOS Safari auto-zoom on input focus
+   iOS zooms in when a focused <input> has font-size < 16px.
+   We enforce 16px on mobile and revert to 14px (text-sm)
+   on sm breakpoints and above where zoom isn't an issue.
+   ISSUE #1 fix.
+══════════════════════════════════════════════════════════ */
+@media (max-width: 639px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+/* ══════════════════════════════════════════════════════════
+   GRADIENT BACKGROUNDS
+══════════════════════════════════════════════════════════ */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+.bg-dark-gradient {
+  background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+}
+
+.bg-party-gradient {
+  background: linear-gradient(135deg, #1a0533 0%, #2d0a5e 40%, #1a0533 100%);
+}
+
+/* ══════════════════════════════════════════════════════════
+   GLASSMORPHISM
+══════════════════════════════════════════════════════════ */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ══════════════════════════════════════════════════════════
+   INTERACTIVE EFFECTS
+══════════════════════════════════════════════════════════ */
+.btn-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+  transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+  box-shadow: 0 0 40px rgba(139, 92, 246, 0.8);
+  transform: translateY(-2px);
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(139, 92, 246, 0.15);
+}
+
+/* ══════════════════════════════════════════════════════════
+   ANIMATIONS
+══════════════════════════════════════════════════════════ */
+/* Shimmer loading skeleton */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(155, 155, 165, 0.08) 25%,
+    rgba(155, 155, 165, 0.18) 50%,
+    rgba(155, 155, 165, 0.08) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Dark mode shimmer */
+.dark .shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.04) 25%,
+    rgba(255, 255, 255, 0.10) 50%,
+    rgba(255, 255, 255, 0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.shimmer-light {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Float animation */
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Urgent timer pulse */
+.timer-urgent {
+  animation: timer-pulse 1s ease-in-out infinite;
+}
+
+@keyframes timer-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════
+   VISUAL TOKENS
+══════════════════════════════════════════════════════════ */
+.text-glow {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.6);
+}
+
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(139, 92, 246, 0.5), transparent);
+}
+
+.package-recommended {
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.8), 0 0 30px rgba(139, 92, 246, 0.3);
+}
+
+.star-filled {
+  color: #F59E0B;
+}
+
+.star-empty {
+  color: #D1D5DB;
+}
+
+/* Razorpay button override */
+.razorpay-payment-button {
+  display: none !important;
+}
+
+/* ══════════════════════════════════════════════════════════
+   SCROLLBAR
+══════════════════════════════════════════════════════════ */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.5);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.8);
+}
+
+/* ══════════════════════════════════════════════════════════
+   MAPLIBRE GL — map container
+══════════════════════════════════════════════════════════ */
+.maplibregl-map {
+  border-radius: 1rem;
+}
+
+.maplibregl-popup-content {
+  border-radius: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.875rem;
+  background: var(--surface);
+  color: var(--foreground);
+  padding: 0.75rem 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}

@@ -11,21 +11,17 @@ class HallImageSerializer(serializers.ModelSerializer):
         fields = ['id', 'url', 'image', 'caption', 'is_primary', 'sort_order']
 
     def get_image(self, obj):
-        if not obj.image:
-            # If it's a URL-based image, ensure it's absolute if it's a relative path
-            if obj.url and obj.url.startswith('/media/'):
-                request = self.context.get('request')
-                if request:
-                    return request.build_absolute_uri(obj.url)
-                return f"http://localhost:8000{obj.url}"
-            return obj.url
+        # Uploaded file — Django FileField always returns a relative /media/... path
+        if obj.image and obj.image.name:
+            return obj.image.url
 
-        request = self.context.get('request')
-        if request:
-            return request.build_absolute_uri(obj.image.url)
-        
-        # Fallback for Windows/Local Dev if request context is missing
-        return f"http://localhost:8000{obj.image.url}"
+        # Fallback to the url field (may be an absolute URL stored from old code)
+        if obj.url:
+            # Strip any absolute hostname so browser uses Next.js /media/ rewrite proxy
+            if '/media/' in obj.url:
+                return obj.url[obj.url.find('/media/'):]
+            return obj.url
+        return None
 
 
 class PackageSerializer(serializers.ModelSerializer):
@@ -77,30 +73,19 @@ class PartyHallListSerializer(serializers.ModelSerializer):
         return obj.longitude
 
     def get_primary_image(self, obj):
-        img = obj.images.filter(is_primary=True).first() or obj.images.first()
-        if not img:
-            return None
-
-        # Prefer uploaded file — but only if it actually exists on disk
-        if img.image:
-            import os
-            if os.path.isfile(img.image.path):
-                request = self.context.get('request')
-                if request:
-                    return request.build_absolute_uri(img.image.url)
-                return f"http://localhost:8000{img.image.url}"
-            # File record in DB but file missing from disk — fall through to url
-
-        # External URL fallback
-        url = img.url or ''
-        if not url:
-            return None
-        if url.startswith('/media/'):
-            request = self.context.get('request')
-            if request:
-                return request.build_absolute_uri(url)
-            return f"http://localhost:8000{url}"
-        return url
+        import os
+        # Try primary image first, then fall back to any image with a real file on disk
+        candidates = list(obj.images.order_by('-is_primary', 'sort_order').all())
+        for img in candidates:
+            if img.image and os.path.isfile(img.image.path):
+                return img.image.url   # relative /media/... — proxied by Next.js
+            if img.url and img.url.startswith('/media/'):
+                return img.url
+        # Last resort: return any non-empty url
+        for img in candidates:
+            if img.url:
+                return img.url
+        return None
 
     def get_distance_km(self, obj):
         return self.context.get('distances', {}).get(str(obj.id))

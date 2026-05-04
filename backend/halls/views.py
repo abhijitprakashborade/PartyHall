@@ -250,12 +250,13 @@ class HallViewSet(viewsets.ModelViewSet):
         try:
             image = HallImage.objects.get(id=image_id, hall=hall)
             image.delete()
-            # If the deleted one was primary, make the first remaining one primary
+            # If the deleted one was primary, promote the next remaining image.
+            # Use queryset .update() to avoid "did not affect any rows" DatabaseError
+            # that occurs when saving a stale in-memory instance after a delete.
             if not hall.images.filter(is_primary=True).exists():
                 first = hall.images.first()
                 if first:
-                    first.is_primary = True
-                    first.save(update_fields=['is_primary'])
+                    hall.images.filter(pk=first.pk).update(is_primary=True)
             return Response({'message': 'Image deleted'}, status=204)
         except HallImage.DoesNotExist:
             return Response({'error': 'Image not found'}, status=404)
